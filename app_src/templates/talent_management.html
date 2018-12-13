@@ -1,0 +1,151 @@
+{% extends "app_base.html" %}
+
+
+{% block styles %}
+    {{super()}}
+{% endblock %}
+
+
+{% block title %}
+    SMWYG/Talent
+{% endblock %}
+
+
+{% block navbar %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+    {{ super() }}
+
+    <div class = "container">
+
+        <div class="modal" id="talentManagementInteractionDetailModal" role="dialog">
+            <div class="modal-dialog custom-modal">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-success">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>TALENT INTERACTION DETAIL</h4>
+                    </div>
+
+                    <div class="modal-body" style="overflow:auto;">
+                        <table id="talent_detail_table" class="display" style="width:100%;"></table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-success">
+
+            <div class="panel-heading">
+                <h4>INTERACTIONS WITH WHAT YOU GOT</h4>
+            </div>
+            <div class="panel-body">
+                <table id="talent_summary_table" class="display"  style="width:100%; cursor:pointer;"></table>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{# ty SO https://stackoverflow.com/a/26194324 #}
+{% block scripts %}
+    {{ super() }}
+    <script>
+
+        $(document).ready( function () {
+            $.ajax({
+                url: "{{ url_for('talent_management_blueprint.get_talent_views') }}",
+                type: "GET",
+                success: function(response) {
+                    var data = response['data'];
+
+                    var talent_summary_table_obj = $('#talent_summary_table').DataTable({
+                        data: data,
+                        responsive: true,
+                        columns: [
+                            {
+                                title: 'first name',
+                                data: 'first_name'
+                            },
+                            {
+                                title: 'last name',
+                                data: 'last_name'
+                            },
+                            {
+                                title: 'email',
+                                data: 'email'
+                            },
+                            {
+                                title: 'last login',
+                                data: 'last_login'
+                            },
+                            {
+                                title: 'interactions',
+                                data: 'interactions'
+                            }
+                        ]
+                    });
+                    new $.fn.dataTable.FixedHeader( talent_summary_table_obj );
+
+                    talent_summary_table_obj.on('click', 'tbody tr', function() {
+                        var detail_data = talent_summary_table_obj.row(this).data()['interaction_detail'];
+
+                        var talent_detail_table_obj = $('#talent_detail_table').DataTable({
+                            data: detail_data,
+                            responsive: true,
+                            columns: [
+                                {
+                                    title: 'job rec name',
+                                    data: 'job_rec_name'
+                                },
+                                {
+                                    title: 'job level',
+                                    data: 'job_level'
+                                },
+                                {
+                                    title: 'job role',
+                                    data: 'job_role'
+                                },
+                                {
+                                    title: 'job location',
+                                    data: 'job_location'
+                                },
+                                {
+                                    title: 'sentiment',
+                                    data: 'sentiment'
+                                },
+                                {
+                                    title: 'comment',
+                                    data: 'comment'
+                                },
+                            ],
+                            bDestroy: true // prevents "can't reinitialize data table" error
+                        });
+                        new $.fn.dataTable.FixedHeader( talent_detail_table_obj );
+
+                        $('#talentManagementInteractionDetailModal').modal('show');
+
+                    })
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.statusText);
+                    var url = "{{ url_for('gateway_blueprint.error') }}";
+                    window.location.replace( url );
+                }
+
+            });
+
+        });
+
+    </script>
+
+{% endblock scripts %}
+

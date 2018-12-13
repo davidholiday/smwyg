@@ -1,0 +1,218 @@
+{% extends "app_base.html" %}
+
+
+{% block styles %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block title %}
+    SMWYG/Feed
+{% endblock %}
+
+
+{% block navbar %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+    {{ super() }}
+
+    <div class="container">
+
+        <div class="modal" id="feedSlideHelpModal" role="dialog">
+            <div class="modal-dialog custom-modal">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-default">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>Don't Panic</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <pre style="white-space: pre-wrap; word-break: keep-all;">{{ help_text }}</pre>
+                    </div>
+
+                    <div class="modal-footer" style="border-top: 0px;">
+                        <button type="button" class="btn btn-success btn-lg" id="feedSlideHelpModalOkButton">Ok</button>
+                        <script>
+                            $('#feedSlideHelpModal').click(function() {
+                                $('#feedSlideHelpModal').modal('toggle')
+                            })
+                        </script>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal" id="feedSlideCommentModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-info">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>How do you feel about this job sheet?</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <label for="feedSlideCommentModalTextField">386 character limit, #tags allowed</label>
+                        <textarea class="form-control"
+                                  rows="5"
+                                  id="feedSlideCommentModalTextField"
+                                  maxlength="386"
+                                  style="resize: vertical"></textarea>
+                    </div>
+
+                    <div class="modal-footer" style="border-top: 0px;">
+                        <button type="button" class="btn btn-success btn-lg" id="feedSlideCommentModalOkButton">Ok</button>
+                        <script>
+                            $('#feedSlideCommentModalOkButton').click(function() {
+                                $('#feedSlideCommentModal').modal('toggle')
+                            })
+                        </script>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="feedSlideSentimentModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-primary">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>How do you feel about this job sheet?</h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <!-- fix me!! -->
+                        <select class="bootstrap-select" id="feedSlideSentimentModalSelectBox">
+                            <option value="DIG IT">Dig It</option>
+                            <option value="MEH" selected="selected">Meh</option>
+                            <option value="NOPE">Nope</option>
+                            <option value="CONFUSED">Confused</option>
+                            <option value="SURPRISED">Surprised</option>
+                        </select>
+
+{#                        <script>#}
+{#                            $.each({{ offering_sentiments|safe }}, function(offering_sentiment) {#}
+{#                                console.log(offering_sentiment);#}
+{#                            });#}
+{#                        </script>#}
+
+{#                        <div class="btn-group" data-toggle="buttons">#}
+{#                            <label class="btn btn-default btn-lg">#}
+{#                                <div class="row">#}
+{#                                    <img src="{{ url_for('static', filename='images/DIG_IT_40.png') }}" width="20%">#}
+{#                                </div>#}
+{#                                <div class="row">#}
+{#                                    <input type="radio" name="options" id="option1"> Option 1#}
+{#                                </div>#}
+{#                            </label>#}
+{#                            <label class="btn btn-default btn-lg active">#}
+{#                                <input type="radio" name="options" id="option2"> Option 2#}
+{#                            </label>#}
+{#                            <label class="btn btn-default btn-lg">#}
+{#                                <input type="radio" name="options" id="option3"> Option 3#}
+{#                            </label>#}
+{#                        </div>#}
+
+                    </div>
+
+                    <div class="modal-footer" style="border-top: 0px;">
+                        <button type="button" class="btn btn-success btn-lg" id="feedSlideSentimentModalOkButton">Ok</button>
+                        <script>
+                            $('#feedSlideSentimentModalOkButton').click(function() {
+                                $('#feedSlideSentimentModal').modal('toggle')
+                            })
+                        </script>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+            <div class="text-center embed-responsive embed-responsive-4by3">
+                <iframe class="embed-responsive-item"
+{#                        src="https://docs.google.com/gview?url={{ doc_url }}&embedded=true">#}
+                          src="https://view.officeapps.live.com/op/embed.aspx?src={{ doc_url }}">
+                </iframe>
+            </div>
+
+            <div class="well">
+                <div class="row">
+                    <div class="pull-left" style="padding-left: 15px">
+                        <button class="btn btn-lg btn-default" id="feedSlideHelpButton" data-toggle="modal" data-target="#feedSlideHelpModal">
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </div>
+
+                    <div class="pull-right" style="padding-right: 15px">
+                        <button class="btn btn-lg btn-info" id="feedSlideCommentButton" data-toggle="modal" data-target="#feedSlideCommentModal">
+                            {# Comment &nbsp; &nbsp;#}
+                            <span class="glyphicon glyphicon-comment"></span>
+                            {{ number_comments }}
+                        </button>
+
+                        <button class="btn btn-lg btn-primary" id="feedSlideSentimentButton" data-toggle="modal" data-target="#feedSlideSentimentModal">
+                            {# Tag &nbsp; &nbsp;#}
+                            <span class="glyphicon glyphicon-tag"></span>
+                            {{ number_sentiments }}
+                        </button>
+
+                        <button class="btn btn-lg btn-success" id="feedSlideNextButton">
+                            Next
+                            <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                            <script>
+                                $('#feedSlideNextButton').click(function() {
+
+                                    payload = {
+                                        "user_comment": $('#feedSlideCommentModalTextField').val(),
+                                        "user_sentiment": $('#feedSlideSentimentModalSelectBox').val(),
+                                        "job_id": {{ job_id }}
+                                    }
+
+                                    $.ajax({
+                                        url: "{{ feed_url }}",
+                                        data: JSON.stringify(payload),
+                                        contentType: "application/json",
+                                        type: "POST",
+                                        success: function(data) {
+                                            window.location.reload();
+                                            $('#feedSlideCommentModalTextField').val("");
+                                            $('#feedSlideSentimentModalSelectBox').val('MEH').prop('selected', true)
+                                        },
+                                        error: function(xhr, status, error) {
+                                            console.log(xhr.statusText);
+                                            var url = "{{ url_for('gateway_blueprint.error') }}";
+                                            window.location.replace( url );
+                                        }
+
+                                    })
+
+                                })
+                            </script>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{# ty SO https://stackoverflow.com/a/26194324 #}
+{% block scripts %}
+    {{ super() }}
+{% endblock scripts %}
+

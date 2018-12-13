@@ -1,0 +1,36 @@
+{% extends "bootstrap/base.html" %}
+
+
+{% block styles %}
+    {{super()}}
+{% endblock %}
+
+
+{% block title %}
+    LOGIN PROTECTED PAGE
+{% endblock %}
+
+
+{% block navbar %}
+{% endblock %}
+
+
+{% block content %}
+
+<div class = "container">
+    <div class="message {{ message_bg }}">
+        <h2>
+            FEEDS
+        </h2>
+    </div>
+</div>
+
+<div class = "container">
+    <div class="message {{ message_bg }}">
+        <h2>
+            {{ message }}
+        </h2>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "app_base.html" %}
+
+
+{% block styles %}
+    {{super()}}
+{% endblock %}
+
+
+{% block title %}
+    SMWYG
+{% endblock %}
+
+
+{% block navbar %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class = "container">
+
+    {{ super() }}
+    <div class="message {{ message_bg }}">
+        <h2>
+            {{ message }}
+        </h2>
+    </div>
+    <div style="margin-top: 20px;" align="center">
+        <img src="{{ url_for('static', filename='images/nothing_to_do_here.gif') }}"/>
+    </div>
+</div>
+
+{% endblock %}
+
+{# ty SO https://stackoverflow.com/a/26194324 #}
+{% block scripts %}
+    {{ super() }}
+{% endblock scripts %}

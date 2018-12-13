@@ -1,0 +1,8 @@
+to get all authors:
+http://localhost:6661/api/authors
+
+to get data on a particular author:
+http://localhost:6661/api/authors?q={"filters":[{"name":"id","op":"has","val":{"name":"id","op":"==","val":"2328321"}}]}
+
+to get all papers published by a particular author:
+http://localhost:6661/api/papers?q={"filters":[{"name":"author_ids","op":"any","val":{"name":"id","op":"==","val":"2328321"}}]}

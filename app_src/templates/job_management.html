@@ -1,0 +1,435 @@
+{% extends "app_base.html" %}
+
+
+{% block styles %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block title %}
+    SMWYG/Jobs
+{% endblock %}
+
+
+{% block navbar %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+    {{ super() }}
+    <div class = "container">
+
+        <div class="modal" id="jobsManagementDetailModal" role="dialog">
+            <div class="modal-dialog custom-modal">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-warning">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>JOB INTERACTION DETAIL</h4>
+                    </div>
+
+                    <div class="modal-body" style="overflow:auto;">
+                        <table id="jobs_detail_table" class="display" style="width:100%;"></table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="addJobModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-info">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>Add New Job</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" method="POST" enctype="multipart/form-data">
+                            {{ form.csrf_token }}
+
+                            <!-- JOB LEVEL DROPDOWN -->
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="job_level_list">
+                                    {{ form.job_level_list.label }}
+                                </label>
+                                <div class="col-sm-10">
+                                    {{ form.job_level_list }}
+                                    {% for error in form.errors.job_level_list %}
+                                        <span class="help-inline">{{ error }}</span></br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- JOB ROLE DROPDOWN -->
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="job_role_list">
+                                    {{ form.job_role_list.label }}
+                                </label>
+                                <div class="col-sm-10">
+                                    {{ form.job_role_list }}
+                                    {% for error in form.errors.job_role_list %}
+                                        <span class="help-inline">{{ error }}</span></br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- JOB LOCATION DROPDOWN -->
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="job_location_list">
+                                    {{ form.job_location_list.label }}
+                                </label>
+                                <div class="col-sm-10">
+                                    {{ form.job_location_list }}
+                                    {% for error in form.errors.job_location_list %}
+                                        <span class="help-inline">{{ error }}</span></br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- JOB REC UPLOAD -->
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="job_rec">
+                                    {{ form.job_rec.label }}
+                                </label>
+                                <div class="col-sm-10">
+                                    {{ form.job_rec }}
+                                    {% for error in form.errors.job_rec %}
+                                        <span class="help-inline">{{ error }}</span></br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <input type="submit" class="btn btn-lg btn-success" value="Submit">
+                            {# <button class="btn btn-lg btn-default" data-dismiss="modal">CANCEL</button> #}
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="getJobLinkModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-primary">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>Get Job Feed Link</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="getJobLinkForm" method="POST" enctype="multipart/form-data">
+                            {{ form.csrf_token }}
+
+                            <!-- JOB LEVEL DROPDOWN -->
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="job_level_list">
+                                    {{ form.job_level_list.label }}
+                                </label>
+                                <div class="col-sm-10">
+                                    {{ form.job_level_list }}
+                                    {% for error in form.errors.job_level_list %}
+                                        <span class="help-inline">{{ error }}</span></br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- JOB ROLE DROPDOWN -->
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="job_role_list">
+                                    {{ form.job_role_list.label }}
+                                </label>
+                                <div class="col-sm-10">
+                                    {{ form.job_role_list }}
+                                    {% for error in form.errors.job_role_list %}
+                                        <span class="help-inline">{{ error }}</span></br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- JOB LOCATION DROPDOWN -->
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" for="job_location_list">
+                                    {{ form.job_location_list.label }}
+                                </label>
+                                <div class="col-sm-10">
+                                    {{ form.job_location_list }}
+                                    {% for error in form.errors.job_location_list %}
+                                        <span class="help-inline">{{ error }}</span></br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <input type="submit" class="btn btn-lg btn-success" value="Submit">
+
+                            {# no need for the round trip to the server, we can resolve this locally... #}
+                            <script>
+                                $(function() {
+                                    $('#getJobLinkForm').on("submit", function(e) {
+
+                                        // cancel the actual submit
+                                        e.preventDefault();
+
+                                        // close the get link modal
+                                        $('#getJobLinkModal').modal('toggle')
+
+
+                                        var values = {};
+                                        $.each($('#getJobLinkForm').serializeArray(), function(i, field) {
+                                            values[field.name] = field.value;
+                                        });
+
+                                        var jobLink =
+                                            $('#getJobLinkForm')['context']['location']['origin']
+                                            + '/feed/next'
+                                            + '/' + {{ provider_id }}
+                                            + '/' + values['job_level_list']
+                                            + '/' + values['job_role_list']
+                                            + '/' + values['job_location_list']
+
+                                        $('#jobLinkText').text(jobLink)
+                                        $('#renderJobLinkModal').modal('toggle')
+
+                                    });
+                                });
+                            </script>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="renderJobLinkModal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-primary">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>Your Job Feed Link</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div>
+                            <h4 id="jobLinkText"></h4>
+                            </br>
+                            <button class="btn btn-lg btn-success" id="renderJobLinkModalOk">Ok</button>
+                            <script>
+                                $('#renderJobLinkModalOk').click(function() {
+                                    $('#renderJobLinkModal').modal('toggle')
+                                })
+                            </script>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="renderJobRecModal" role="dialog">
+            <div class="modal-dialog custom-modal">
+                <div class="modal-content">
+
+                    <div class="modal-header modal-header-success">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4>Your Job Rec</h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="text-center embed-responsive embed-responsive-4by3">
+                            <iframe id="renderJobRecModalIframe"
+                                    class="embed-responsive-item"
+                                    src="" >
+                            </iframe>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="pull-right">
+                            <button class="btn btn-lg btn-success" id="renderJobLinkModalOk">Ok</button>
+                            <script>
+                                $('#renderJobRecModal').click(function() {
+                                    $('#renderJobRecModal').modal('toggle')
+                                })
+                            </script>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-lg btn-info" data-toggle="modal" data-target="#addJobModal">Add Job</button>
+            <button class="btn btn-lg btn-primary" data-toggle="modal" data-target="#getJobLinkModal">Get Job Feed Link</button>
+
+            <div class="pull-right">
+                <input id="jobInteractionDetailOrJobRecSwitch"
+                       checked data-toggle="toggle"
+                       data-size="large"
+                       data-on="Show Interactions"
+                       data-off="Show Job Rec"
+                       data-onstyle="warning"
+                       data-offstyle="success"
+                       data-width="200"
+                       type="checkbox">
+            </div>
+
+
+        </div>
+
+        <div class="panel panel-info" style="margin-top: 15px;">
+
+            <div class="panel-heading">
+                <h4>WHAT YOU GOT</h4>
+            </div>
+            <div class="panel-body">
+                <table id="jobs_summary_table" class="display"  style="width:100%; cursor:pointer;"></table>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+
+
+{# ty SO https://stackoverflow.com/a/26194324 #}
+{% block scripts %}
+    {{ super() }}
+
+    <script>
+
+        $(document).ready( function () {
+            $.ajax({
+                url: "{{ url_for('job_management_blueprint.get_job_data') }}",
+                type: "GET",
+                success: function(response) {
+                    var data = response['data'];
+
+                    var jobs_summary_table_obj = $('#jobs_summary_table').DataTable({
+                        data: data,
+                        responsive: true,
+                        columns: [
+                            {
+                                title: 'job sheet',
+                                data: 'job_sheet'
+                            },
+                            {
+                                title: 'job role',
+                                data: 'job_role'
+                            },
+                            {
+                                title: 'job level',
+                                data: 'job_level'
+                            },
+                            {
+                                title: 'job location',
+                                data: 'job_location'
+                            },
+                            {
+                                title: 'submitted at',
+                                data: 'submitted_at'
+                            },
+                            {
+                                title: 'views',
+                                data: 'views'
+                            },
+                            {
+                                title: 'overall sentiment',
+                                data: 'overall_sentiment'
+                            },
+                        ]
+                    });
+                    new $.fn.dataTable.FixedHeader( jobs_summary_table_obj );
+
+                    jobs_summary_table_obj.on('click', 'tbody tr', function() {
+                        var show_interactions = $("input:checkbox").is(':checked');
+                        var row_data = jobs_summary_table_obj.row(this).data()
+                        var detail_data = row_data['interaction_detail'];
+
+                        if (show_interactions) {
+
+                            var jobs_detail_table_obj = $('#jobs_detail_table').DataTable({
+                                data: detail_data,
+                                responsive: true,
+                                columns: [
+                                    {
+                                        title: 'first name',
+                                        data: 'first_name'
+                                    },
+                                    {
+                                        title: 'last name',
+                                        data: 'last_name'
+                                    },
+                                    {
+                                        title: 'email',
+                                        data: 'email'
+                                    },
+                                    {
+                                        title: 'last login',
+                                        data: 'last_login'
+                                    },
+                                    {
+                                        title: 'sentiment',
+                                        data: 'sentiment'
+                                    },
+                                    {
+                                        title: 'comment',
+                                        data: 'comment'
+                                    },
+                                ],
+                                bDestroy: true // prevents "can't reinitialize data table" error
+                            });
+                            new $.fn.dataTable.FixedHeader( jobs_detail_table_obj );
+
+                            $('#jobsManagementDetailModal').modal('show');
+                        }
+                        else {
+                            var protocol = window.location.protocol;
+                            var host = window.location.host;
+                            var rec_id = row_data['id'];
+                            var rec_name = row_data['job_sheet'];
+                            var get_rec_url = protocol + "//" + host + "/api/jobrec/" + rec_id + "/" + rec_name;
+
+                            document.getElementById('renderJobRecModalIframe').src =
+                                "https://view.officeapps.live.com/op/embed.aspx?src=" + get_rec_url;
+
+                            console.log(document.getElementById('renderJobRecModalIframe').src)
+
+                            $('#renderJobRecModal').modal('show');
+                        }
+                    })
+                },
+
+                error: function(xhr, status, error) {
+                    console.log(xhr.statusText);
+                    var url = "{{ url_for('gateway_blueprint.error') }}";
+                    window.location.replace( url );
+                }
+
+            });
+
+        });
+
+    </script>
+
+    {#
+    blug - because of a bug and the fact that I can't seem to directly access the api...
+    https://github.com/minhur/bootstrap-toggle/issues/140
+    #}
+    <script>
+        $("input:checkbox").on('change', function(){
+            var isChecked = $(this).is(':checked')
+            $(this).val(Number(isChecked)).attr('checked', isChecked)
+        });
+    </script>
+
+{% endblock scripts %}
+

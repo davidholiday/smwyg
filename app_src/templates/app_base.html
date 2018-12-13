@@ -1,0 +1,115 @@
+{% extends "bootstrap/base.html" %}
+
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.5/css/fixedHeader.bootstrap.min.css ">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css ">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+
+
+    {# these two need to be defined up top because flask-bootstrap doesn't define jquery until the end and my show
+       messages hack won't work unless jquery is defined up top #}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src={{ url_for('static', filename='js/jquery.bootstrap-growl.min.js') }}></script>
+
+{% endblock %}
+
+
+{% block title %}
+    SMWYG
+{% endblock %}
+
+
+{% block navbar %}
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+{#                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">#}
+{#                    <span class="sr-only">Toggle navigation</span>#}
+{#                    <span class="icon-bar"></span>#}
+{#                    <span class="icon-bar"></span>#}
+{#                    <span class="icon-bar"></span>#}
+{#                </button>#}
+                <a class="navbar-brand" href="#">SHOW ME WHAT YOU GOT!</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#"
+                           class="dropdown-toggle"
+                           data-toggle="dropdown"
+                           role="button"
+                           aria-haspopup="true"
+                           aria-expanded="false">
+                             <span class="glyphicon glyphicon-menu-hamburger"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            {{ hamburger_menu_items|safe }}
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+{% endblock %}
+
+
+{% block content %}
+
+    {# https://coderwall.com/p/ijrrpa/flask-flash-messages-as-bootstrap-alert#}
+    <div id="alert" style="width: 40%; padding-top: 10px; padding-left: 10px;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+            {% if messages %}
+                {% for category, message in messages %}
+                    {# this works fine but it shifts the content up and down as the messages fade in and out#}
+                    {#                <div class="alert alert-{{ category }} alert-dismissible" role="alert">#}
+                    {#                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>#}
+                    {#                    <!-- <strong>Title</strong> --> {{ message }}#}
+                    {#                </div>#}
+
+
+                    <script>
+                        $.bootstrapGrowl("{{ message }}", // Messages
+                            { // options
+                                type: "{{ category }}", // info, success, warning and danger
+                                ele: "body", // parent container
+                                offset: {
+                                    from: "top",
+                                    amount: 20
+                                },
+                                align: "right", // right, left or center
+                                width: 250,
+                                delay: 4000,
+                                allow_dismiss: true, // add a close button to the message
+                                stackup_spacing: 10
+                            });
+                    </script>
+
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+
+{% endblock %}
+
+
+{# ty SO https://stackoverflow.com/a/26194324 #}
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+{% endblock scripts %}
+

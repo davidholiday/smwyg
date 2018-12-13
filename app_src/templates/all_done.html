@@ -1,0 +1,48 @@
+{% extends "app_base.html" %}
+
+
+{% block styles %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block title %}
+    SMWYG/Feed
+{% endblock %}
+
+
+{% block navbar %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+    {{ super() }}
+
+    <div class="container">
+
+        <h1>you've gone through all the job recs - awesome! here is some tushy-shaking music for you to enjoy</h1>
+
+        <div class="embed-responsive embed-responsive-4by3">
+            <iframe
+                    class="embed-responsive-item"
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/mFSRCG4DrmI"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen>
+            </iframe>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{# ty SO https://stackoverflow.com/a/26194324 #}
+{% block scripts %}
+    {{ super() }}
+{% endblock scripts %}
+

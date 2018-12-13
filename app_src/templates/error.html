@@ -1,0 +1,55 @@
+{% extends "app_base.html" %}
+
+
+{% block styles %}
+    {{super()}}
+{% endblock %}
+
+
+{% block title %}
+    SMWYG
+{% endblock %}
+
+
+{% block navbar %}
+    {{ super() }}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class = "container">
+
+        {{ super() }}
+
+        <div class="message {{ message_bg }}">
+            <h4>
+                error code: {{ error_code }}
+            </h4>
+        </div>
+
+{#        <div class="message {{ message_bg }}">#}
+{#            <h4>#}
+{#                error text: {{ error_text }}#}
+{#            </h4>#}
+{#        </div>#}
+
+        <div class="message bg-warning">
+            <h4>
+                don't know what or how or why but if you're seeing this something done did went wrong (probably Larry's fault...)
+            </h4>
+        </div>
+
+        <div>
+            <img src="{{ url_for('static', filename='images/larry_and_jay_large.jpg') }}" style='height: 100%; width: 100%; object-fit: contain'/>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{# ty SO https://stackoverflow.com/a/26194324 #}
+{% block scripts %}
+    {{ super() }}
+{% endblock scripts %}
+
