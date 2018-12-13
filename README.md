@@ -1,5 +1,5 @@
 # smwyg
-MVP for Tech Recruiting Portal App currently deployed to heroku at https:\\herokuapp.smwyg.com
+MVP for Tech Recruiting Portal App set up to be deployed via heroku
 
 known issues: 
 
