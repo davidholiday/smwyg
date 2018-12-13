@@ -3,7 +3,7 @@ MVP for Tech Recruiting Portal App currently deployed to heroku at https://smwyg
 
 ![screen shot 1](https://raw.githubusercontent.com/davidholiday/smwyg/master/smwyg_jobs.png "screen shot 1")
 
-![screen shot 2](https://raw.githubusercontent.com/davidholiday/smwyg/master/smwyg_feed.png "screen shot 2)
+![screen shot 2](https://raw.githubusercontent.com/davidholiday/smwyg/master/smwyg_feed.png "screen shot 2")
 
 known issues: 
 
